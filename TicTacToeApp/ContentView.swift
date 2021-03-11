@@ -7,10 +7,14 @@
 
 import SwiftUI
 
+let midLeft = 100
+let midRight = 200
+let start = 0
+let height = 300
+
 struct ContentView: View {
     var body: some View {
-        Text("Porter's computer is slow")
-            .padding()
+        Text("Hello World")
     }
 }
 

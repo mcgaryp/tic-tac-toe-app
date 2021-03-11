@@ -15,6 +15,7 @@
 		6182C19225FAB4E100C62B5B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6182C19025FAB4E100C62B5B /* LaunchScreen.storyboard */; };
 		6182C19D25FAB4E100C62B5B /* TicTacToeAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6182C19C25FAB4E100C62B5B /* TicTacToeAppTests.swift */; };
 		6182C1A825FAB4E100C62B5B /* TicTacToeAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6182C1A725FAB4E100C62B5B /* TicTacToeAppUITests.swift */; };
+		61AE4F7B25FAC40B00DAA8B6 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AE4F7A25FAC40B00DAA8B6 /* SwiftUIView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		6182C1A325FAB4E100C62B5B /* TicTacToeAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6182C1A725FAB4E100C62B5B /* TicTacToeAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeAppUITests.swift; sourceTree = "<group>"; };
 		6182C1A925FAB4E100C62B5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		61AE4F7A25FAC40B00DAA8B6 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		6182C18425FAB4DE00C62B5B /* TicTacToeApp */ = {
 			isa = PBXGroup;
 			children = (
+				61AE4F7925FAC3CB00DAA8B6 /* Views */,
 				6182C18525FAB4DE00C62B5B /* AppDelegate.swift */,
 				6182C18725FAB4DE00C62B5B /* SceneDelegate.swift */,
 				6182C18925FAB4DE00C62B5B /* ContentView.swift */,
@@ -134,6 +137,14 @@
 				6182C1A925FAB4E100C62B5B /* Info.plist */,
 			);
 			path = TicTacToeAppUITests;
+			sourceTree = "<group>";
+		};
+		61AE4F7925FAC3CB00DAA8B6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				61AE4F7A25FAC40B00DAA8B6 /* SwiftUIView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -268,6 +279,7 @@
 			files = (
 				6182C18625FAB4DE00C62B5B /* AppDelegate.swift in Sources */,
 				6182C18825FAB4DE00C62B5B /* SceneDelegate.swift in Sources */,
+				61AE4F7B25FAC40B00DAA8B6 /* SwiftUIView.swift in Sources */,
 				6182C18A25FAB4DE00C62B5B /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
