@@ -2,15 +2,20 @@
 //  SwiftUIView.swift
 //  TicTacToeApp
 //
-//  Created by Porter McGary on 3/11/21.
+//  Created by Porter McGary & Joshua Bee on 3/11/21.
 //
 
 import SwiftUI
 
+/// This is the board
 struct TicTacToeBoard: View {
+    /// current board
     var board: Array<BoxState>
+    /// call back function when there is a tap
     let callback : (Int) -> Void
+    
     var body: some View {
+        /// three rows of three
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 ForEach(0...2, id: \.self) { i in
@@ -31,7 +36,7 @@ struct TicTacToeBoard: View {
     }
 }
 
-// Going to get rid of the preview.... to run on Content View
+/// Going to get rid of the preview.... to run on Content View
 //struct SwiftUIView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        TicTacToeBoard(board: Array<BoxState>(repeating: BoxState.empty, count: 9), callback: takeTurn)
@@ -42,6 +47,7 @@ struct TicTacToeBoard: View {
 //    }
 //}
 
+/// create a row
 struct Row: View {
     var box: BoxState
     let index: Int
@@ -58,6 +64,7 @@ struct Row: View {
     }
 }
 
+/// create an individual box
 struct Box: View {
     let id: Int
     let string: String
