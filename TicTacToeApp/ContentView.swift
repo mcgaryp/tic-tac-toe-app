@@ -19,7 +19,7 @@ struct ContentView: View {
     /// does the current game have a winner
     @State private var winner: Bool = false
     /// The number values that are winners
-    private let winners = [7, 73, 273]
+    private let winners = [7, 56, 73, 84, 146, 273, 292, 448]
     /// Player 1's name
     private let player1: String = "Player 1"
     /// Player 2's name
