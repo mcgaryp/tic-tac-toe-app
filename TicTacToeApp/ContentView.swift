@@ -93,17 +93,22 @@ struct ContentView: View {
     
     /// find out who wont the game
     func whoWon(id: Int) {
-        /// a counter to keep trak of when the winner should start to be decided
+        /// a counter to keep track of when the winner should start to be decided
         if turnCount <= 4 {
             return
         }
-        /// lets get the number of the players total moves
-        let winnerMap = converter(symbol: board[id])
-        /// comparing the number to a number in the list determines if the move was a winning one
-        if winners.contains(winnerMap) {
-            winner.toggle() /// there is a winner
-            addScore()      /// Add to their score
-            resetBoard()    /// reset the board
+        // lets get the number of the players total moves
+        // boardState represents one player's board positions as binary converted to an integer
+        let boardState = converter(symbol: board[id])
+        /// compare the number to a number in the list determines if the move was a winning one
+        var i = 0
+        while i < winners.count {
+            if boardState & winners[i] == winners[i] {//& to check if there are 3 in a row somewhere
+                winner.toggle() /// there is a winner
+                addScore()      /// Add to their score
+                resetBoard()    /// reset the board
+            }
+            i += 1
         }
     }
     
@@ -117,9 +122,9 @@ struct ContentView: View {
         for box in board.reversed() {
             binary += (box == symbol) ? "1" : "0"
         }
-        
-        /// convert to integer
-        return Int(strtoul(binary, nil, 2))
+//      convert the string to an int for the & operation later
+        let b = Int(binary, radix: 2)!
+        return b
     }
     
     /// Add the score of the winner
