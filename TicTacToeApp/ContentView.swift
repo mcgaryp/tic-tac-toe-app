@@ -80,7 +80,7 @@ struct ContentView: View {
         if board[id] != .empty {
             return
         }
-        turnCount += 1  // count the turns
+        turnCount += 1  /// count the turns
         /// what is the symbol we are placing in the square
         let symbol = whoseTurn ? BoxState.x : BoxState.o
         /// assign the symbol to that square
@@ -97,18 +97,17 @@ struct ContentView: View {
         if turnCount <= 4 {
             return
         }
-        // lets get the number of the players total moves
-        // boardState represents one player's board positions as binary converted to an integer
+        /// lets get the number of the players total moves
+        /// boardState represents one player's board positions as binary converted to an integer
         let boardState = converter(symbol: board[id])
         /// compare the number to a number in the list determines if the move was a winning one
-        var i = 0
-        while i < winners.count {
-            if boardState & winners[i] == winners[i] {//& to check if there are 3 in a row somewhere
+        for i in 0...winners.count - 1 {
+            ///& to check if there are 3 in a row somewhere
+            if boardState & winners[i] == winners[i] {
                 winner.toggle() /// there is a winner
                 addScore()      /// Add to their score
                 resetBoard()    /// reset the board
             }
-            i += 1
         }
     }
     
@@ -122,7 +121,7 @@ struct ContentView: View {
         for box in board.reversed() {
             binary += (box == symbol) ? "1" : "0"
         }
-//      convert the string to an int for the & operation later
+        /// convert the string to an int for the & operation later
         let b = Int(binary, radix: 2)!
         return b
     }
