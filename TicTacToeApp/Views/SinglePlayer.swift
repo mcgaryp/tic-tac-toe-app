@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// TODO: Add computer match
+/// TODO: Add different levels of computer play
+
 struct SinglePlayer: View {
     var body: some View {
         Text("Single Player Coming Soon!")

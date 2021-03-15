@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/// TODO: Add a feature when the game ends in a cats.
+
 struct TwoPlayer: View {
     /// State of the tic-tac-toe-board
     @State private var board: Array<BoxState> = Array(repeating: BoxState.empty, count: 9)
@@ -92,6 +94,7 @@ struct TwoPlayer: View {
     }
     
     /// find out who wont the game
+    /// FIXME: Fix the board when the pattern in 0x0x_x0x0 or x0x0_0x0x. The alert is skipped and the winner gets two points
     func whoWon(id: Int) {
         /// a counter to keep track of when the winner should start to be decided
         if turnCount <= 4 {
