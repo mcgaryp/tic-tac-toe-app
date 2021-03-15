@@ -10,15 +10,32 @@ import SwiftUI
 struct StartView: View {
     @State private var singlePlayerMode: Bool = false
     @State private var twoPlayerMode: Bool = false
+//    private let config = UIImage.SymbolConfiguration()
     
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             VStack {
-                Text("Tic-Tac-Toe")
-                    .padding()
-                    .font(.title)
-                    .foregroundColor(.white)
+                ZStack {
+                    if singlePlayerMode || twoPlayerMode {
+                        HStack {
+                            Button(action: {
+                                singlePlayerMode = false
+                                twoPlayerMode = false
+                            }, label: {
+                                Image(systemName: "arrow.backward")
+                                    .foregroundColor(.white)
+                                    .font(Font.system(.title))
+                                    .padding()
+                            })
+                            Spacer()
+                        }
+                    }
+                    Text("Tic-Tac-Toe")
+                        .padding()
+                        .font(.title)
+                        .foregroundColor(.white)
+                }
                 Spacer()
                 if !singlePlayerMode && !twoPlayerMode {
                     Button(action: toggleSingle, label: {
@@ -51,6 +68,7 @@ struct StartView: View {
             }
         }
     }
+    
     func toggleSingle() {
         singlePlayerMode.toggle()
     }
