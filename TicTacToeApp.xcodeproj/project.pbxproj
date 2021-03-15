@@ -17,6 +17,9 @@
 		6182C1A825FAB4E100C62B5B /* TicTacToeAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6182C1A725FAB4E100C62B5B /* TicTacToeAppUITests.swift */; };
 		61AE4F7B25FAC40B00DAA8B6 /* TicTacToeBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AE4F7A25FAC40B00DAA8B6 /* TicTacToeBoard.swift */; };
 		61AE4F8225FAD46B00DAA8B6 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61AE4F8125FAD46B00DAA8B6 /* Enums.swift */; };
+		61D983FF25FED92900B85EE2 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D983FE25FED92900B85EE2 /* StartView.swift */; };
+		61D9840425FEDB3700B85EE2 /* SinglePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D9840325FEDB3700B85EE2 /* SinglePlayer.swift */; };
+		61D9840C25FEDB5900B85EE2 /* TwoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61D9840B25FEDB5900B85EE2 /* TwoPlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +56,9 @@
 		6182C1A925FAB4E100C62B5B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61AE4F7A25FAC40B00DAA8B6 /* TicTacToeBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeBoard.swift; sourceTree = "<group>"; };
 		61AE4F8125FAD46B00DAA8B6 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		61D983FE25FED92900B85EE2 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		61D9840325FEDB3700B85EE2 /* SinglePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePlayer.swift; sourceTree = "<group>"; };
+		61D9840B25FEDB5900B85EE2 /* TwoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoPlayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +152,9 @@
 			isa = PBXGroup;
 			children = (
 				61AE4F7A25FAC40B00DAA8B6 /* TicTacToeBoard.swift */,
+				61D983FE25FED92900B85EE2 /* StartView.swift */,
+				61D9840325FEDB3700B85EE2 /* SinglePlayer.swift */,
+				61D9840B25FEDB5900B85EE2 /* TwoPlayer.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -289,10 +298,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				6182C18625FAB4DE00C62B5B /* AppDelegate.swift in Sources */,
+				61D9840C25FEDB5900B85EE2 /* TwoPlayer.swift in Sources */,
 				6182C18825FAB4DE00C62B5B /* SceneDelegate.swift in Sources */,
+				61D983FF25FED92900B85EE2 /* StartView.swift in Sources */,
 				61AE4F8225FAD46B00DAA8B6 /* Enums.swift in Sources */,
 				61AE4F7B25FAC40B00DAA8B6 /* TicTacToeBoard.swift in Sources */,
 				6182C18A25FAB4DE00C62B5B /* ContentView.swift in Sources */,
+				61D9840425FEDB3700B85EE2 /* SinglePlayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
