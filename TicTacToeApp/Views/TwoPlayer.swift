@@ -21,9 +21,10 @@ struct TwoPlayer: View {
     /// Text displayed in the alert at the end of the game
     @State private var winnerText: String = ""
     @State private var touch: Bool = true
-    @State private var selectedLevel = Levels.easy.rawValue
+    @State private var selectedLevel = Levels.hard.rawValue
     /// The number values that are winners
     private let winners = [7, 56, 73, 84, 146, 273, 292, 448]
+    private let stopFromWinning = [5,6,3,40,48,24,320,384,192,68,80,20,17,257,272,65,72,9,130,144,18,260,288,36]
     /// Player 1's name
     private let player1: String = "Player 1"
     /// Player 2's name
@@ -42,7 +43,7 @@ struct TwoPlayer: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()   // black background
-            VStack(spacing: 0) {
+            VStack(spacing: 20) {
                 /// the board
                 TicTacToeBoard(board: board, callback: takeTurn)
                     .allowsHitTesting(touch)
@@ -83,21 +84,31 @@ struct TwoPlayer: View {
                             .foregroundColor(.white)
                     }
                 }
+                
                 if playerMode == .single {
-                    Text("Difficulty")
-                                    .foregroundColor(.white)
-                                    .font(.title2)
-                    Picker("Difficulty", selection: $selectedLevel) {
-                        ForEach(Levels.allCases) { level in
-                            Text(level.rawValue.capitalized)
+                    VStack(spacing: 8) {
+                        Text("Difficulty")
+                            .foregroundColor(.white)
+                            .font(.title2)
+                        HStack {
+                            Spacer()
+                            Picker("Difficulty", selection: $selectedLevel) {
+                                ForEach(Levels.allCases) { level in
+                                    Text(level.rawValue.capitalized)
+                                }
+                            }
+                                .pickerStyle(SegmentedPickerStyle())
+                            Spacer()
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle())
                 }
             }
             /// notify who won
             .alert(isPresented: $winner, content: {
-                Alert(title: Text(winnerText))
+                Alert(
+                    title: Text(winnerText),
+                    dismissButton: .cancel(Text("Ok"), action: resetBoard)
+                )
             })
         }
     }
@@ -120,7 +131,7 @@ struct TwoPlayer: View {
         }
         turnCount += 1  /// count the turns
         /// what is the symbol we are placing in the square
-        let symbol = whoseTurn ? BoxState.x : BoxState.o
+        let symbol = playerMode == .single ? BoxState.x : whoseTurn ? BoxState.x : BoxState.o
         /// assign the symbol to that square
         board[id] = symbol
         /// Lets see if that was a winning move
@@ -209,15 +220,30 @@ struct TwoPlayer: View {
         }
     }
     
-    ///
+    /// Let the computer take it's turn
     func computerTurn() {
         var id:Int = -1
-        while true {
-            id = Int.random(in: 0...8)
-            if board[id] == .empty {
-                break
-            }
+        /// The location if the level is easy
+        if selectedLevel == Levels.easy.rawValue {
+            id = easyLevel()
+//            while true {
+//                id = Int.random(in: 0...8)
+//                if board[id] == .empty {
+//                    break
+//                }
+//            }
         }
+        
+        /// The location if the level is medium
+        if selectedLevel == Levels.medium.rawValue {
+            id = mediumLevel()
+        }
+        
+        /// The location of the level is hard
+        if selectedLevel == Levels.hard.rawValue {
+            id = hardLevel()
+        }
+        
         turnCount += 1  /// count the turns
         /// what is the symbol we are placing in the square
         let symbol = BoxState.o
@@ -225,6 +251,51 @@ struct TwoPlayer: View {
         board[id] = symbol
         /// Lets see if that was a winning move
         whoWon(id: id)
+    }
+    
+    /// TODO: Function that makes a completely random difficulty
+    func randomLevel() -> Int {
+        // Randomly choose a level
+        
+        return -1
+    }
+    
+    /// TODO: Function that makes winning easy
+    func easyLevel() -> Int {
+        // Guess what place the player would not go to win
+        
+        return -1
+    }
+    
+    /// TODO: Function that makes winning sort of difficult
+    func mediumLevel() -> Int {
+        // Guess what the player will do next.
+        // half of the time block the player if they can make a winning move
+        
+        return -1
+    }
+    
+    /// TODO: Function that makes winning difficult
+    func hardLevel() -> Int {
+        // Guess what the player will do next.
+        // If there is a possible move that they player can do to win then block that move by going there
+        var id = -1
+        let boardState = converter(symbol: BoxState.x)
+        for stop in stopFromWinning {
+            if stopFromWinning.contains(boardState & stop) {
+                print("NEED TO PREVENT WIN")
+                // TODO: Find the place to put the O
+            }
+//            Maybe XOR
+//            print("\(boardState) ^ \(winner) = \(boardState ^ winner)")
+        }
+        while true {
+            id = Int.random(in: 0...8)
+            if board[id] == .empty {
+                break
+            }
+        }
+        return id
     }
 }
 
