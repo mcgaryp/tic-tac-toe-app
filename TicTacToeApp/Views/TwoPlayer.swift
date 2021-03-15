@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-/// TODO: Add a feature when the game ends in a cats.
-
 struct TwoPlayer: View {
     /// State of the tic-tac-toe-board
     @State private var board: Array<BoxState> = Array(repeating: BoxState.empty, count: 9)
@@ -20,6 +18,8 @@ struct TwoPlayer: View {
     @State private var turnCount: Int = 0
     /// does the current game have a winner
     @State private var winner: Bool = false
+    /// Text displayed in the alert at the end of the game
+    @State private var winnerText: String = ""
     /// The number values that are winners
     private let winners = [7, 56, 73, 84, 146, 273, 292, 448]
     /// Player 1's name
@@ -61,7 +61,7 @@ struct TwoPlayer: View {
             }
             /// notify who won
             .alert(isPresented: $winner, content: {
-                Alert(title: Text("\(whoseTurn ? player2 : player1) Won!"))
+                Alert(title: Text(winnerText))
             })
         }
     }
@@ -94,7 +94,6 @@ struct TwoPlayer: View {
     }
     
     /// find out who wont the game
-    /// FIXME: Fix the board when the pattern in 0x0x_x0x0 or x0x0_0x0x. The alert is skipped and the winner gets two points
     func whoWon(id: Int) {
         /// a counter to keep track of when the winner should start to be decided
         if turnCount <= 4 {
@@ -107,11 +106,26 @@ struct TwoPlayer: View {
         for i in 0...winners.count - 1 {
             ///& to check if there are 3 in a row somewhere
             if boardState & winners[i] == winners[i] {
+                /// set the winner text
+                winnerText = "\(whoseTurn ? player2 : player1) Won!"
                 winner.toggle() /// there is a winner
                 addScore()      /// Add to their score
                 resetBoard()    /// reset the board
+                return
             }
         }
+        
+        /// if there is a cats game
+        if turnCount == 9 {
+            catsGame()
+        }
+    }
+    
+    /// Changes the view according to a cats game
+    func catsGame() {
+        winnerText = "The game ended in CATS"
+        winner.toggle()
+        resetBoard()
     }
     
     /// Lets convert the total player moves to a number.
