@@ -9,12 +9,15 @@ import SwiftUI
 
 struct SinglePlayer: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Single Player Coming Soon!")
+            .foregroundColor(.white)
     }
 }
 
 struct SinglePlayer_Previews: PreviewProvider {
     static var previews: some View {
         SinglePlayer()
+            .padding()
+            .background(Color.black).ignoresSafeArea()
     }
 }
