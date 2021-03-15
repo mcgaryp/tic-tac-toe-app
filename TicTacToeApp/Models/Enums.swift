@@ -13,3 +13,18 @@ enum BoxState {
     case x
     case o
 }
+
+enum PlayerMode {
+    case single
+    case multi
+    case none
+}
+
+enum Levels: String, CaseIterable, Identifiable {
+    case easy
+    case medium
+    case hard
+    case random
+
+    var id: String {self.rawValue}
+}

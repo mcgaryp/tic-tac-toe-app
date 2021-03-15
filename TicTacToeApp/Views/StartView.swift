@@ -8,21 +8,16 @@
 import SwiftUI
 
 struct StartView: View {
-    @State private var singlePlayerMode: Bool = false
-    @State private var twoPlayerMode: Bool = false
-//    private let config = UIImage.SymbolConfiguration()
+    @State private var playerMode: PlayerMode = PlayerMode.none
     
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             VStack {
                 ZStack {
-                    if singlePlayerMode || twoPlayerMode {
+                    if playerMode != .none {
                         HStack {
-                            Button(action: {
-                                singlePlayerMode = false
-                                twoPlayerMode = false
-                            }, label: {
+                            Button(action: toggleNone, label: {
                                 Image(systemName: "arrow.backward")
                                     .foregroundColor(.white)
                                     .font(Font.system(.title))
@@ -37,7 +32,7 @@ struct StartView: View {
                         .foregroundColor(.white)
                 }
                 Spacer()
-                if !singlePlayerMode && !twoPlayerMode {
+                if playerMode == .none {
                     Button(action: toggleSingle, label: {
                         Text("Single Player")
                             .padding()
@@ -57,12 +52,12 @@ struct StartView: View {
                         .padding()
                 }
                 
-                if singlePlayerMode {
-                    SinglePlayer()
+                if playerMode == .single{
+                    TwoPlayer(player: playerMode)
                 }
                 
-                if twoPlayerMode {
-                    TwoPlayer()
+                if playerMode == .multi {
+                    TwoPlayer(player: playerMode)
                 }
                 Spacer()
             }
@@ -70,11 +65,15 @@ struct StartView: View {
     }
     
     func toggleSingle() {
-        singlePlayerMode.toggle()
+        playerMode = .single
     }
     
     func toggleTwo() {
-        twoPlayerMode.toggle()
+        playerMode = .multi
+    }
+    
+    func toggleNone() {
+        playerMode = .none
     }
 }
 
