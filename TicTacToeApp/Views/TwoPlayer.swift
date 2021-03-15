@@ -38,6 +38,7 @@ struct TwoPlayer: View {
                 HStack {
                     Button (action: resetBoard, label: {
                         Text("Reset Board")
+                            .frame(width: 110)
                             .padding()
                             .background(Color.white)
                             .clipShape(Capsule())
@@ -47,6 +48,7 @@ struct TwoPlayer: View {
                     
                     Button (action: resetScores, label: {
                         Text("Reset Scores")
+                            .frame(width: 110)
                             .padding()
                             .background(Color.white)
                             .clipShape(Capsule())
