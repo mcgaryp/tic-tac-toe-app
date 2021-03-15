@@ -34,15 +34,26 @@ struct TwoPlayer: View {
             VStack(spacing: 0) {
                 /// the board
                 TicTacToeBoard(board: board, callback: takeTurn)
-                /// reset button
-                Button (action: resetBoard, label: {
-                    Text("Reset Board")
-                        .padding()
-                        .background(Color.white)
-                        .clipShape(Capsule())
-                        .foregroundColor(.blue)
-                        .padding()
-                })
+                /// reset buttons
+                HStack {
+                    Button (action: resetBoard, label: {
+                        Text("Reset Board")
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(Capsule())
+                            .foregroundColor(.blue)
+                            .padding()
+                    })
+                    
+                    Button (action: resetScores, label: {
+                        Text("Reset Scores")
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(Capsule())
+                            .foregroundColor(.blue)
+                            .padding()
+                    })
+                }
                 /// players scores
                 HStack {
                     VStack {
@@ -149,6 +160,13 @@ struct TwoPlayer: View {
             scores[0] += 1  /// Add to player 1
         } else {
             scores[1] += 1  /// Add to plater 2
+        }
+    }
+    
+    /// Reset the players scores
+    func resetScores() {
+        for i in 0...scores.count - 1 {
+            scores[i] = 0
         }
     }
 }
