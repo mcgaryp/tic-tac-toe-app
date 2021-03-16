@@ -34,7 +34,7 @@ struct StartView: View {
                 Spacer()
                 if playerMode == .none {
                     Button(action: toggleSingle, label: {
-                        Text("Single Player")
+                        Text("One Player")
                             .padding()
                             .background(Color.white)
                             .foregroundColor(.black)

@@ -36,17 +36,6 @@ struct TicTacToeBoard: View {
     }
 }
 
-/// Going to get rid of the preview.... to run on Content View
-//struct SwiftUIView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        TicTacToeBoard(board: Array<BoxState>(repeating: BoxState.empty, count: 9), callback: takeTurn)
-//    }
-//
-//    func takeTurn(id: Int) {
-//
-//    }
-//}
-
 /// create a row
 struct Row: View {
     var box: BoxState

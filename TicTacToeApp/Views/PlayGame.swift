@@ -6,10 +6,7 @@
 //
 
 import SwiftUI
-// FIXME: Doesn't Prevent win at ID = 2 when X at 4 & 6, ID = 6 when X at 0 & 3, ID = 0 when X at 4 & 8
-// FIXME: Fails to detect a prevention win when there are two that it can block, Win at 7 & 8, 1 & 4, 2 & 3
-// FIXME: Crashed when the O are all on the diagnonal
-// FIXME: The O's are only played on the second game
+
 struct PlayGame: View {
     /// State of the tic-tac-toe-board
     @State private var board: Array<BoxState> = Array(repeating: BoxState.empty, count: 9)
@@ -24,7 +21,8 @@ struct PlayGame: View {
     /// Text displayed in the alert at the end of the game
     @State private var winnerText: String = ""
     @State private var touch: Bool = true
-    @State private var selectedLevel = Levels.hard.rawValue
+    @State private var selectedLevel = Levels.medium.rawValue
+    @State private var inGame: Bool = false
     /// The number values that are winners
     private let winners = [7, 56, 73, 84, 146, 273, 292, 448]
     private var stopFromWinning = [3, 5, 6, 9, 17, 18, 20, 24, 36, 40, 48, 65, 68, 72, 80, 130, 144, 192, 257, 260, 272, 288, 320, 384]
@@ -57,7 +55,7 @@ struct PlayGame: View {
                             .padding()
                             .background(Color.white)
                             .clipShape(Capsule())
-                            .foregroundColor(.blue)
+                            .foregroundColor(.black)
                             .padding()
                     })
                     
@@ -67,24 +65,27 @@ struct PlayGame: View {
                             .padding()
                             .background(Color.white)
                             .clipShape(Capsule())
-                            .foregroundColor(.blue)
+                            .foregroundColor(.black)
                             .padding()
                     })
                 }
                 /// players scores
                 HStack {
+                    Spacer()
                     VStack {
                         Text(player1)
                             .foregroundColor(.white)
                         Text("\(scores[0])")
                             .foregroundColor(.white)
                     }
+                    Spacer()
                     VStack{
                         Text(playerMode == .single ? cpu : player2)
                             .foregroundColor(.white)
                         Text("\(scores[1])")
                             .foregroundColor(.white)
                     }
+                    Spacer()
                 }
                 
                 if playerMode == .single {
@@ -99,7 +100,8 @@ struct PlayGame: View {
                                     Text(level.rawValue.capitalized)
                                 }
                             }
-                                .pickerStyle(SegmentedPickerStyle())
+                            .pickerStyle(SegmentedPickerStyle())
+                            .disabled(inGame)
                             Spacer()
                         }
                     }
@@ -123,6 +125,7 @@ struct PlayGame: View {
         }
         /// reset the turn counter to 0
         turnCount = 0
+        inGame = false
     }
     
     /// take your turn by pressing one of the squares
@@ -134,6 +137,7 @@ struct PlayGame: View {
         // If its a new game the user starts first
         if turnCount == 0 {
             playerTurn = .player1
+            inGame = true
         }
         
         turnCount += 1  /// count the turns
@@ -301,12 +305,9 @@ struct PlayGame: View {
     /// Function that makes winning easy
     func easyLevel() -> Int {
         /// Guess what place the player would not go to win
-        let chance: Int = Int.random(in: 1...100)
-        if chance < 26 {
-            return hardLevel()
-        }
         
-        return random()
+        
+        return -1
     }
     
     /// Function that makes winning sort of difficult
@@ -314,6 +315,7 @@ struct PlayGame: View {
         /// Guess what the player will do next.
         /// half of the time block the player if they can make a winning move
         let chance: Int = Int.random(in: 1...10)
+        /// 50% chance of a good move
         if chance < 6 {
             return hardLevel()
         }
@@ -416,15 +418,7 @@ struct PlayGame_Previews: PreviewProvider {
     }
 }
 
-extension String {
-    func pad(with character: String, toLength length: Int) -> String {
-        let padCount = length - self.count
-        guard padCount > 0 else { return self }
-
-        return String(repeating: character, count: padCount) + self
-    }
-}
-
+/// To see what was happening with the bits of the board game
 extension BinaryInteger {
     var binaryDescription: String {
         var binaryString = ""
