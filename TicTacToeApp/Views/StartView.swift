@@ -53,11 +53,11 @@ struct StartView: View {
                 }
                 
                 if playerMode == .single{
-                    TwoPlayer(player: playerMode)
+                    PlayGame(player: playerMode)
                 }
                 
                 if playerMode == .multi {
-                    TwoPlayer(player: playerMode)
+                    PlayGame(player: playerMode)
                 }
                 Spacer()
             }

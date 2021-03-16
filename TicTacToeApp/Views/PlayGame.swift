@@ -6,8 +6,11 @@
 //
 
 import SwiftUI
-
-struct TwoPlayer: View {
+// FIXME: Doesn't Prevent win at ID = 2 when X at 4 & 6, ID = 6 when X at 0 & 3, ID = 0 when X at 4 & 8
+// FIXME: Fails to detect a prevention win when there are two that it can block, Win at 7 & 8, 1 & 4, 2 & 3
+// FIXME: Crashed when the O are all on the diagnonal
+// FIXME: The O's are only played on the second game
+struct PlayGame: View {
     /// State of the tic-tac-toe-board
     @State private var board: Array<BoxState> = Array(repeating: BoxState.empty, count: 9)
     /// State of whose turn it is
@@ -24,7 +27,7 @@ struct TwoPlayer: View {
     @State private var selectedLevel = Levels.hard.rawValue
     /// The number values that are winners
     private let winners = [7, 56, 73, 84, 146, 273, 292, 448]
-    private let stopFromWinning = [5,6,3,40,48,24,320,384,192,68,80,20,17,257,272,65,72,9,130,144,18,260,288,36]
+    private var stopFromWinning = [3, 5, 6, 9, 17, 18, 20, 24, 36, 40, 48, 65, 68, 72, 80, 130, 144, 192, 257, 260, 272, 288, 320, 384]
     /// Player 1's name
     private let player1: String = "Player 1"
     /// Player 2's name
@@ -37,8 +40,7 @@ struct TwoPlayer: View {
         UISegmentedControl.appearance().selectedSegmentTintColor = .white
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.black], for: .selected)
         UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-        playerMode = player
-    }
+        playerMode = player    }
     
     var body: some View {
         ZStack {
@@ -129,6 +131,11 @@ struct TwoPlayer: View {
         if board[id] != .empty {
             return
         }
+        // If its a new game the user starts first
+        if turnCount == 0 {
+            playerTurn = .player1
+        }
+        
         turnCount += 1  /// count the turns
         /// what is the symbol we are placing in the square
         var symbol = BoxState.empty
@@ -164,14 +171,15 @@ struct TwoPlayer: View {
         }
     }
     
+    /// Change the turn of the player
     func changeTurn() {
-        print("PLAYED: \(playerTurn)")
+//        print("PLAYED First: \(playerTurn)")
         if playerTurn == .player1 {
             playerTurn = .player2
         } else if playerTurn == .player2 {
             playerTurn = .player1
         }
-        print("PLAYED: \(playerTurn)")
+//        print("PLAYING Next: \(playerTurn)")
     }
     
     /// find out who wont the game
@@ -190,19 +198,21 @@ struct TwoPlayer: View {
                 /// set the winner text
                 if playerTurn == .player1 {
                     winnerText = player1
-                } else if playerTurn == .player2 {
+                } else if playerTurn == .player2 && playerMode == .single{
+                    winnerText = cpu
+                } else {
                     winnerText = player2
                 }
                 winnerText += " Won!"
                 winner.toggle() /// there is a winner
                 addScore()      /// Add to their score
-                print("WINNER IS: \(playerTurn)")
                 return
             }
         }
         
         /// if there is a cats game
         if turnCount == 9 {
+            // notify that it was cats
             catsGame()
         }
     }
@@ -210,7 +220,8 @@ struct TwoPlayer: View {
     /// Changes the view according to a cats game
     func catsGame() {
         winnerText = "The CATS won this time!"
-//        winner.toggle()
+        // Notify the game is over
+        winner.toggle()
         resetBoard()
     }
     
@@ -265,11 +276,13 @@ struct TwoPlayer: View {
                 id = hardLevel()
             }
             
-            if board[id] == .empty {
-                /// assign the symbol to that square
-                board[id] = BoxState.o
-            } else {
-                id = -1
+            if id != -1 {
+                if board[id] == .empty {
+                    /// assign the symbol to that square
+                    board[id] = BoxState.o
+                } else {
+                    id = -1
+                }
             }
         }
         
@@ -279,44 +292,81 @@ struct TwoPlayer: View {
         whoWon(id: id)
     }
     
-    /// TODO: Function that makes a completely random difficulty
-    func randomLevel() -> Int {
-        // Randomly choose a level
-        
-        return -1
+    /// Function that Plays in a completely random place
+    func random() -> Int {
+        /// Randomly choose a place to play
+        return Int.random(in: 0...8)
     }
     
-    /// TODO: Function that makes winning easy
+    /// Function that makes winning easy
     func easyLevel() -> Int {
-        // Guess what place the player would not go to win
+        /// Guess what place the player would not go to win
+        let chance: Int = Int.random(in: 1...100)
+        if chance < 26 {
+            return hardLevel()
+        }
         
-        return -1
+        return random()
     }
     
-    /// TODO: Function that makes winning sort of difficult
+    /// Function that makes winning sort of difficult
     func mediumLevel() -> Int {
-        // Guess what the player will do next.
-        // half of the time block the player if they can make a winning move
-        
-        return -1
+        /// Guess what the player will do next.
+        /// half of the time block the player if they can make a winning move
+        let chance: Int = Int.random(in: 1...10)
+        if chance < 6 {
+            return hardLevel()
+        }
+        return random()
     }
     
     /// Function that makes winning difficult
     func hardLevel() -> Int {
-        // Guess what the player will do next.
-        // If there is a possible move that they player can do to win then block that move by going there
+        /// Guess what the player will do next.
+        /// If there is a possible move that they player can do to win then block that move by going there
         var id = -1
+        
+        /// Looking for winning moves
+        id = tryToWin()
+        
+        /// Did I find any?
+        if id > -1 {
+            return id
+        }
+        
+        /// Look for saving moves
+        id = tryToSave()
+        
+        /// Did I find a spot?
+        if id > -1 {
+            return id
+        }
+        
+        /// If there is not a strategic place to place the O then go somewhere random
+        if id == -1 {
+            id = random()
+        }
+        
+        return id
+    }
+    
+    /// Try and find a place to strategically go and win
+    func tryToWin() -> Int {
+        var id: Int = -1    /// Init the position
         let oState = converter(symbol: .o)
-        // Find where to place the O if we can win
+        /// Find where to place the O if we can win
         outerLoop: for play in stopFromWinning {
+            /// is this a winning possibility
             if stopFromWinning.contains(oState & play) {
-                // Find where to Place the O to win
+                /// Find where to Place the O to win
                 innerLoop: for w in winners {
+                    /// does this spot have a chance to win?
                     if (oState | (oState ^ w)) == w {
+                        /// convert to the position on the board i want to go
                         id = Int(log2(Double(oState ^ w)))
-                        print("I HAVE A CHANCE TO WIN AT: \(id)")
-                        // Perform winning move
+                        /// Perform winning move
                         if id > -1 {
+                            /// Has the spot been taken?
                             if board[id] != .empty {
                                 id = -1
                             } else {
@@ -327,42 +377,69 @@ struct TwoPlayer: View {
                 }
             }
         }
-        
-        // Look for saving moves
+        return id
+    }
+    
+    /// Try and find a place to strategically go and prevent the user from winning
+    func tryToSave() -> Int {
+        var id: Int = -1    /// Init id
         let xState = converter(symbol: .x)
         outerLoop: for stop in stopFromWinning {
+            /// There is a winning move the player can play next...
             if stopFromWinning.contains(xState & stop) {
-                // Find where to place the O if we need to prevent a win
+                /// Find where to place the O if we need to prevent a win
                 innerLoop: for w in winners {
-                    if (xState | (xState ^ w)) == w {
-                        // convert to
-                        id = Int(log2(Double(xState ^ w)))
-                        print("NEED TO PREVENT WIN AT: \(id)")
-                        break innerLoop
+                    /// if the board and the almost win is | with the winning move and it is in the winners group then we need to prevent
+                    if winners.contains((xState & stop) | w) {
+                        /// convert to position on the game
+                        id = Int(log2(Double((xState & stop) ^ w)))
+                        if id > -1 {
+                            /// if the move is blocked
+                            if board[id] != .empty {
+                                id = -1
+                            } else {
+                                /// this is our move
+                                return id
+                            }
+                        }
                     }
                 }
-                break outerLoop
             }
         }
-        if id > -1 {
-            if board[id] != .empty {
-                id = -1
-            } else {
-                return id
-            }
-        }
-        
-        // If there is not a strategic place to place the O then go somewhere random
-        if id == -1 {
-            id = Int.random(in: 0...8)
-        }
-        
         return id
     }
 }
 
-struct TwoPlayer_Previews: PreviewProvider {
+struct PlayGame_Previews: PreviewProvider {
     static var previews: some View {
-        TwoPlayer(player: .single)
+        PlayGame(player: .single)
+    }
+}
+
+extension String {
+    func pad(with character: String, toLength length: Int) -> String {
+        let padCount = length - self.count
+        guard padCount > 0 else { return self }
+
+        return String(repeating: character, count: padCount) + self
+    }
+}
+
+extension BinaryInteger {
+    var binaryDescription: String {
+        var binaryString = ""
+        var internalNumber = self
+        var counter = 0
+
+        for _ in (1...self.bitWidth) {
+            binaryString.insert(contentsOf: "\(internalNumber & 1)", at: binaryString.startIndex)
+            internalNumber >>= 1
+            counter += 1
+            if counter % 4 == 0 {
+                binaryString.insert(contentsOf: " ", at: binaryString.startIndex)
+            }
+        }
+
+        return binaryString
     }
 }

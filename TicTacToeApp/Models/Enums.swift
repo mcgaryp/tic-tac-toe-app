@@ -24,7 +24,6 @@ enum Levels: String, CaseIterable, Identifiable {
     case easy
     case medium
     case hard
-    case random
 
     var id: String {self.rawValue}
 }
