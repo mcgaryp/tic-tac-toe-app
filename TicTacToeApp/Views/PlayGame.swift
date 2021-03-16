@@ -44,6 +44,27 @@ struct PlayGame: View {
         ZStack {
             Color.black.ignoresSafeArea()   // black background
             VStack(spacing: 20) {
+                /// players scores
+                HStack {
+                    Spacer()
+                    VStack {
+                        Image(systemName: "person.circle.fill")
+                        Text(player1)
+                            .foregroundColor(.white)
+                        Text("\(scores[0])")
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                    VStack{
+                        Image(systemName: "person.circle.fill")
+                        Text(playerMode == .single ? cpu : player2)
+                            .foregroundColor(.white)
+                        Text("\(scores[1])")
+                            .foregroundColor(.white)
+                    }
+                    Spacer()
+                }
+                
                 /// the board
                 TicTacToeBoard(board: board, callback: takeTurn)
                     .allowsHitTesting(touch)
@@ -69,25 +90,8 @@ struct PlayGame: View {
                             .padding()
                     })
                 }
-                /// players scores
-                HStack {
-                    Spacer()
-                    VStack {
-                        Text(player1)
-                            .foregroundColor(.white)
-                        Text("\(scores[0])")
-                            .foregroundColor(.white)
-                    }
-                    Spacer()
-                    VStack{
-                        Text(playerMode == .single ? cpu : player2)
-                            .foregroundColor(.white)
-                        Text("\(scores[1])")
-                            .foregroundColor(.white)
-                    }
-                    Spacer()
-                }
                 
+                /// Difficulty
                 if playerMode == .single {
                     VStack(spacing: 8) {
                         Text("Difficulty")
