@@ -28,3 +28,8 @@ enum Levels: String, CaseIterable, Identifiable {
 
     var id: String {self.rawValue}
 }
+
+enum PlayerTurns {
+    case player1
+    case player2
+}

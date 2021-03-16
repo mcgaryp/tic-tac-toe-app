@@ -11,7 +11,7 @@ struct TwoPlayer: View {
     /// State of the tic-tac-toe-board
     @State private var board: Array<BoxState> = Array(repeating: BoxState.empty, count: 9)
     /// State of whose turn it is
-    @State private var whoseTurn: Bool = true
+    @State private var playerTurn: PlayerTurns = PlayerTurns.player1
     /// Players scores
     @State private var scores: Array<Int> = Array(repeating: 0, count: 2)
     /// number of turns the players have had since the beginning of the current match
@@ -131,13 +131,19 @@ struct TwoPlayer: View {
         }
         turnCount += 1  /// count the turns
         /// what is the symbol we are placing in the square
-        let symbol = playerMode == .single ? BoxState.x : whoseTurn ? BoxState.x : BoxState.o
+        var symbol = BoxState.empty
+        if playerTurn == .player1 {
+            symbol = .x
+        } else if playerTurn == .player2 {
+            symbol = .o
+        }
+        
         /// assign the symbol to that square
         board[id] = symbol
         /// Lets see if that was a winning move
         whoWon(id: id)
         /// its now the next players turn
-        whoseTurn.toggle()
+        changeTurn()
         
         if !winner {
             if playerMode == .single {
@@ -147,12 +153,25 @@ struct TwoPlayer: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     computerTurn()
                     /// switch to users turn
-                    whoseTurn.toggle()
+                    
+                    if !winner {
+                        changeTurn()
+                    }
                     /// enable tap gestures
                     touch = true
                 }
             }
         }
+    }
+    
+    func changeTurn() {
+        print("PLAYED: \(playerTurn)")
+        if playerTurn == .player1 {
+            playerTurn = .player2
+        } else if playerTurn == .player2 {
+            playerTurn = .player1
+        }
+        print("PLAYED: \(playerTurn)")
     }
     
     /// find out who wont the game
@@ -169,9 +188,15 @@ struct TwoPlayer: View {
             ///& to check if there are 3 in a row somewhere
             if boardState & winners[i] == winners[i] {
                 /// set the winner text
-                winnerText = "\(whoseTurn ? player1 : playerMode == .single ? cpu : player2) Won!"
+                if playerTurn == .player1 {
+                    winnerText = player1
+                } else if playerTurn == .player2 {
+                    winnerText = player2
+                }
+                winnerText += " Won!"
                 winner.toggle() /// there is a winner
                 addScore()      /// Add to their score
+                print("WINNER IS: \(playerTurn)")
                 return
             }
         }
@@ -206,9 +231,9 @@ struct TwoPlayer: View {
     
     /// Add the score of the winner
     func addScore() {
-        if whoseTurn {
+        if playerTurn == .player1 {
             scores[0] += 1  /// Add to player 1
-        } else {
+        } else if playerTurn == .player2 {
             scores[1] += 1  /// Add to plater 2
         }
     }
@@ -223,32 +248,33 @@ struct TwoPlayer: View {
     /// Let the computer take it's turn
     func computerTurn() {
         var id:Int = -1
-        /// The location if the level is easy
-        if selectedLevel == Levels.easy.rawValue {
-            id = easyLevel()
-//            while true {
-//                id = Int.random(in: 0...8)
-//                if board[id] == .empty {
-//                    break
-//                }
-//            }
-        }
-        
-        /// The location if the level is medium
-        if selectedLevel == Levels.medium.rawValue {
-            id = mediumLevel()
-        }
-        
-        /// The location of the level is hard
-        if selectedLevel == Levels.hard.rawValue {
-            id = hardLevel()
+
+        while id < 0 {
+            /// The location if the level is easy
+            if selectedLevel == Levels.easy.rawValue {
+                id = easyLevel()
+            }
+            
+            /// The location if the level is medium
+            if selectedLevel == Levels.medium.rawValue {
+                id = mediumLevel()
+            }
+            
+            /// The location of the level is hard
+            if selectedLevel == Levels.hard.rawValue {
+                id = hardLevel()
+            }
+            
+            if board[id] == .empty {
+                /// assign the symbol to that square
+                board[id] = BoxState.o
+            } else {
+                id = -1
+            }
         }
         
         turnCount += 1  /// count the turns
-        /// what is the symbol we are placing in the square
-        let symbol = BoxState.o
-        /// assign the symbol to that square
-        board[id] = symbol
+        
         /// Lets see if that was a winning move
         whoWon(id: id)
     }
@@ -275,26 +301,62 @@ struct TwoPlayer: View {
         return -1
     }
     
-    /// TODO: Function that makes winning difficult
+    /// Function that makes winning difficult
     func hardLevel() -> Int {
         // Guess what the player will do next.
         // If there is a possible move that they player can do to win then block that move by going there
         var id = -1
-        let boardState = converter(symbol: BoxState.x)
-        for stop in stopFromWinning {
-            if stopFromWinning.contains(boardState & stop) {
-                print("NEED TO PREVENT WIN")
-                // TODO: Find the place to put the O
+        let oState = converter(symbol: .o)
+        // Find where to place the O if we can win
+        outerLoop: for play in stopFromWinning {
+            if stopFromWinning.contains(oState & play) {
+                // Find where to Place the O to win
+                innerLoop: for w in winners {
+                    if (oState | (oState ^ w)) == w {
+                        id = Int(log2(Double(oState ^ w)))
+                        print("I HAVE A CHANCE TO WIN AT: \(id)")
+                        // Perform winning move
+                        if id > -1 {
+                            if board[id] != .empty {
+                                id = -1
+                            } else {
+                                return id
+                            }
+                        }
+                    }
+                }
             }
-//            Maybe XOR
-//            print("\(boardState) ^ \(winner) = \(boardState ^ winner)")
         }
-        while true {
+        
+        // Look for saving moves
+        let xState = converter(symbol: .x)
+        outerLoop: for stop in stopFromWinning {
+            if stopFromWinning.contains(xState & stop) {
+                // Find where to place the O if we need to prevent a win
+                innerLoop: for w in winners {
+                    if (xState | (xState ^ w)) == w {
+                        // convert to
+                        id = Int(log2(Double(xState ^ w)))
+                        print("NEED TO PREVENT WIN AT: \(id)")
+                        break innerLoop
+                    }
+                }
+                break outerLoop
+            }
+        }
+        if id > -1 {
+            if board[id] != .empty {
+                id = -1
+            } else {
+                return id
+            }
+        }
+        
+        // If there is not a strategic place to place the O then go somewhere random
+        if id == -1 {
             id = Int.random(in: 0...8)
-            if board[id] == .empty {
-                break
-            }
         }
+        
         return id
     }
 }
