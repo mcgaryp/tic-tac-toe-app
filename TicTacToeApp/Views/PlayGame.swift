@@ -308,10 +308,18 @@ struct PlayGame: View {
     
     /// Function that makes winning easy
     func easyLevel() -> Int {
-        /// Guess what place the player would not go to win
-        
-        
-        return -1
+        /// Guess what the player will do next.
+        /// a third the time block the player if they can make a winning move
+        let goodMove = hardLevel()
+        let randMove = random()
+        let chance: Int = Int.random(in: 1...100)
+        /// 20% chance of a good move
+        if chance < 20 {
+            return goodMove
+        }
+        else {
+            return randMove
+        }
     }
     
     /// Function that makes winning sort of difficult
