@@ -56,7 +56,7 @@ struct PlayGame: View {
                     }
                     Spacer()
                     VStack{
-                        Image(systemName: "person.circle.fill")
+                        Image(systemName: playerMode == .single ? "cpu" : "person.circle.fill")
                         Text(playerMode == .single ? cpu : player2)
                             .foregroundColor(.white)
                         Text("\(scores[1])")
